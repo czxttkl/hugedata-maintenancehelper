@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="entries_list_preference">
+    <item>程序员</item>
+<item>足球周刊</item>
+<item>花花公子</item>
+<item>故事会</item>
+</string-array>
+
+<string-array name="entryvalues_list_preference">
+<item>程序员</item>
+<item>足球周刊</item>
+<item>花花公子</item>
+<item>故事会</item>
+</string-array>
+
+</resources>
