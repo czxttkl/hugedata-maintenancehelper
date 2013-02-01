@@ -89,7 +89,7 @@ public class StartFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-			//	Log.i("Hugedata:StartFragment", "clickBtnTcpServer");
+				Log.i("Hugedata:StartFragment11", "clickBtnTcpServer:mTcpServerService" + (mTcpServerService==null?"null":"not null"));
 				if (!mSharedPreferences.getBoolean("tcpServer", false)) {
 					new Thread(mTcpServerService.new TcpServerStart()).start();
 				} else {
@@ -132,9 +132,6 @@ public class StartFragment extends Fragment {
 		}
 		
 		doBindService();
-		
-		
-		
 		// Log.i("Hugedata:StartFragment","doBindService()");
 		// Log.i("Hugedata:StartFragment:OnResume:mTcpServerService",(mTcpServerService==null?"null":"not null"));
 

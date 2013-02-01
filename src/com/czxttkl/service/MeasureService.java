@@ -6,8 +6,10 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.czxttkl.hugedata.ConfigureFragment;
+import com.czxttkl.service.TcpServerService.MyBinder;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -15,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -23,7 +26,8 @@ public class MeasureService extends Service {
 
 	// All the measurement results
 	public static HashMap<String, String> dataMap = new HashMap<String, String>();
-
+	
+	private final MyBinder mBinder = new MyBinder();
 	// Shared Preferences for all the activities and services
 	SharedPreferences sharedPref;
 
@@ -81,9 +85,9 @@ public class MeasureService extends Service {
 	}
 
 	@Override
-	public IBinder onBind(Intent arg0) {
+	public MyBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		return mBinder;
 	}
 
 	@Override
@@ -91,11 +95,12 @@ public class MeasureService extends Service {
 		// TODO Auto-generated method stub
 		registerReceiver(mBatInfoReceiver, new IntentFilter(
 				Intent.ACTION_BATTERY_CHANGED));
-		Log.i("Hugedata:MeasureService", "onCreate");
+		
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		// Log.i("MeasureService","portTcpClient:" +
 		// getSharedPreferences("portTcpClient",0).getString(key, defValue));
-		Log.i("MeasureService", sharedPref.getString("portTcpClient", "111"));
+		Log.i("Hugedata:MeasureService", "OnCreate()" + sharedPref.getString("portTcpClient", "111"));
+		getLocalIpAddress();
 		super.onCreate();
 	}
 
@@ -104,9 +109,21 @@ public class MeasureService extends Service {
 		// TODO Auto-generated method stub
 		
 		Log.i("Hugedata:MeasureService", "onStartCommand");
-		getLocalIpAddress();
+		
 		return START_STICKY; // this service is explicitly started and stopped
 								// as needed
 	}
+	
+	public Set<String> getDatamapKeySet(){
+		getLocalIpAddress();
+		return dataMap.keySet();
+	}
 
+	
+	public class MyBinder extends Binder {
+		public MeasureService getService() {
+			return MeasureService.this;
+		}
+	}
+	
 }

@@ -29,6 +29,8 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Parcel;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
@@ -76,6 +78,15 @@ public class TcpServerService extends Service {
 			// Log.i("Hugedata","return TcpServerService");
 			return TcpServerService.this;
 		}
+
+		@Override
+		protected boolean onTransact(int code, Parcel data, Parcel reply,
+				int flags) throws RemoteException {
+			// TODO Auto-generated method stub
+			Log.i("Hugedata:TcpServerService","onTransact");
+			return super.onTransact(code, data, reply, flags);
+		}
+		
 	}
 
 	private final MyBinder mBinder = new MyBinder();
@@ -170,6 +181,7 @@ public class TcpServerService extends Service {
 					Log.i("Hugedata:TcpServerService", "Server Accepting @"
 							+ SERVERPORT);
 					singleTask = serverSocket.accept();
+
 					/*
 					 * ObjectInputStream in = new
 					 * ObjectInputStream(client.getInputStream());
@@ -223,19 +235,20 @@ public class TcpServerService extends Service {
 		Process process = null;
 		try {
 			File dir = new File("/tasktmp");
-			if(!dir.exists()){
-			Log.i("Hugedata:TcpServerService", "tasktmp make dir");
-			File location = new File("/");
-			process = Runtime.getRuntime().exec("su", null, location);
-			DataOutputStream os = new DataOutputStream(process.getOutputStream());
-			os.writeBytes("mkdir tasktmp\n");
-			os.writeBytes("exit \n");
-			}
-			else Log.i("Hugedata:TcpServerService", "tasktmp dir existed");
+			if (!dir.exists()) {
+				Log.i("Hugedata:TcpServerService", "tasktmp make dir");
+				File location = new File("/");
+				process = Runtime.getRuntime().exec("su", null, location);
+				DataOutputStream os = new DataOutputStream(
+						process.getOutputStream());
+				os.writeBytes("mkdir tasktmp\n");
+				os.writeBytes("exit \n");
+			} else
+				Log.i("Hugedata:TcpServerService", "tasktmp dir existed");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 
 		mSharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplication());
@@ -314,94 +327,102 @@ public class TcpServerService extends Service {
 
 	private final class SocketTask implements Runnable {
 		private Socket socket = null;
+		public String head;
+		public PushbackInputStream inStream;
 
 		public SocketTask(Socket socket) {
 			this.socket = socket;
 		}
 
 		public void run() {
+			Log.i("Hugedata:TcpServerService", "Accepted connection from"
+					+ socket.getInetAddress() + ":" + socket.getPort());
 			try {
-				Log.i("Hugedata:TcpServerService", "Accepted connection from"
-						+ socket.getInetAddress() + ":" + socket.getPort());
-				PushbackInputStream inStream = new PushbackInputStream(
-						socket.getInputStream());
-				String head = StreamTool.readLine(inStream);
-				// Log.i("Hugedata:TcpServerService:inStream",
-				// inStream.toString());
-				Log.i("Hugedata:TcpServerService", "head:" + head);
-				// String head = "97;201302010954333";
-				if (head != null) {
-					String[] items = head.split(";");
-					String filelength = items[0];
-					String taskId = items[1];
-					// System.currentTimeMillis();
-					
-					File dir = new File("/tasktmp");
-/*					if (!dir.exists()) {
-						dir.mkdirs();
-						Log.i("Hugedata:TcpServerService",
-								"dir still not exist in SocketTask");
-					}*/
+				inStream = new PushbackInputStream(socket.getInputStream());
+				head = StreamTool.readLine(inStream);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Log.i("Hugedata:TcpServerService", "head:" + head);
 
-					boolean taskExist = false;
-					if (taskId != null && !"".equals(taskId)) {
-						taskExist = find(taskId);
-					}
-					File file = null;
-					int position = 0;
+			if (head.trim().equals("handshake"))
+				handShake();
+			if (head.trim().equals("task"))
+				taskReceive();
+		}// run
 
-					if (!taskExist) {
-						Log.i("Hugedata:TcpServerService",
-								"Start Receiving new Task");
-						file = new File(dir, taskId + ".xml");
-						// save(id, file);
-					} else {
-						Log.i("Hugedata:TcpServerService", "Task Existing");
-						file = new File(dir, taskId + ".xml");
-						File logFile = new File(dir, taskId + ".xml.log");
-						Properties properties = new Properties();
-						properties.load(new FileInputStream(logFile));
-						position = Integer.valueOf(properties
-								.getProperty("length"));
-						Log.i("Hugedata:TcpServerService",
-								"The file has been uploaded " + position
-										+ " bytes. ");
-					}
+		public void handShake() {
+			
+		}
+		
+		public void taskReceive() {
+			try {
+				head = StreamTool.readLine(inStream);
+				String[] items = head.split(";");
+				String filelength = items[0];
+				String taskId = items[1];
+				// System.currentTimeMillis();
 
-					OutputStream outStream = socket.getOutputStream();
-					String response = taskId + ";" + position + "\r\n";
-					outStream.write(response.getBytes());
-
-					RandomAccessFile fileOutStream = new RandomAccessFile(file,
-							"rwd");
-					if (position == 0)
-						fileOutStream.setLength(Integer.valueOf(filelength));
-					fileOutStream.seek(position);
-
-					byte[] buffer = new byte[1024];
-					int len = -1;
-					int length = position;
-
-					while ((len = inStream.read(buffer)) != -1) {
-						fileOutStream.write(buffer, 0, len);
-						length += len;
-						Properties properties = new Properties();
-						properties.put("length", String.valueOf(length));
-						FileOutputStream logFile = new FileOutputStream(
-								new File(file.getParentFile(), file.getName()
-										+ ".log"));
-						Log.i("Hugedata:TcpServerService","new log file" + file.getName() + ".log");
-						properties.store(logFile, null);
-						logFile.close();
-					}
-
-					// if(length==fileOutStream.length()) delete(id);
-					fileOutStream.close();
-					inStream.close();
-					outStream.close();
-					Log.i("Hugedata:TcpServerService", "Uploaded successfully");
-					file = null;
+				File dir = new File("/tasktmp");
+				boolean taskExist = false;
+				if (taskId != null && !"".equals(taskId)) {
+					taskExist = find(taskId);
 				}
+				File file = null;
+				int position = 0;
+
+				if (!taskExist) {
+					Log.i("Hugedata:TcpServerService",
+							"Start Receiving new Task");
+					file = new File(dir, taskId + ".xml");
+					// save(id, file);
+				} else {
+					Log.i("Hugedata:TcpServerService", "Task Existing");
+					file = new File(dir, taskId + ".xml");
+					File logFile = new File(dir, taskId + ".xml.log");
+					Properties properties = new Properties();
+					properties.load(new FileInputStream(logFile));
+					position = Integer
+							.valueOf(properties.getProperty("length"));
+					Log.i("Hugedata:TcpServerService",
+							"The file has been uploaded " + position
+									+ " bytes. ");
+				}
+
+				OutputStream outStream = socket.getOutputStream();
+				String response = taskId + ";" + position + "\r\n";
+				outStream.write(response.getBytes());
+
+				RandomAccessFile fileOutStream = new RandomAccessFile(file,
+						"rwd");
+				if (position == 0)
+					fileOutStream.setLength(Integer.valueOf(filelength));
+				fileOutStream.seek(position);
+
+				byte[] buffer = new byte[1024];
+				int len = -1;
+				int length = position;
+
+				while ((len = inStream.read(buffer)) != -1) {
+					fileOutStream.write(buffer, 0, len);
+					length += len;
+					Properties properties = new Properties();
+					properties.put("length", String.valueOf(length));
+					FileOutputStream logFile = new FileOutputStream(new File(
+							file.getParentFile(), file.getName() + ".log"));
+					Log.i("Hugedata:TcpServerService",
+							"new log file" + file.getName() + ".log");
+					properties.store(logFile, null);
+					logFile.close();
+				}
+
+				// if(length==fileOutStream.length()) delete(id);
+				fileOutStream.close();
+				inStream.close();
+				outStream.close();
+				Log.i("Hugedata:TcpServerService", "Uploaded successfully");
+				file = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 				Log.i("Hugedata:TcpServerService",
@@ -414,6 +435,7 @@ public class TcpServerService extends Service {
 				}
 			}
 		}
-	}
+
+	}// SocketTask
 
 }
