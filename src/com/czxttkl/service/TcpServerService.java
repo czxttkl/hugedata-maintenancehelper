@@ -1,5 +1,6 @@
 package com.czxttkl.service;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -219,6 +220,17 @@ public class TcpServerService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		Process process = null;
+		try {
+			File location = new File("/");
+			process = Runtime.getRuntime().exec("/system/xbin/su mkdir tasktmp", null, location);
+			/*DataOutputStream os = new DataOutputStream(process.getOutputStream());
+			os.writeBytes("mkdir /tasktmp");
+			os.writeBytes("exit \n");*/
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		File dir = new File("/tasktmp");
 		if (!dir.exists()) {
 			dir.mkdirs();
@@ -322,7 +334,7 @@ public class TcpServerService extends Service {
 					String filelength = items[0];
 					String taskId = items[1];
 					// System.currentTimeMillis();
-
+					
 					File dir = new File("/tasktmp");
 					if (!dir.exists()) {
 						dir.mkdirs();
