@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ public class StartFragment extends Fragment {
 	OnClickListener ltnTcpServer;
 	public boolean tcpServerStart = false;
 	public SharedPreferences mSharedPreferences;
+	
 
 	protected static final int SERVER_ESTABLISH_FAILED = 0;
 	protected static final int SERVER_ESTABLISH_SUCCESSFUL = 1;
@@ -124,7 +126,15 @@ public class StartFragment extends Fragment {
 		// Log.i("Hugedata:StartFragment:listener",(ltnTcpServer==null?"null":"not null"));
 		btnTcpClient.setOnClickListener(ltnTcpClient);
 		btnTcpServer.setOnClickListener(ltnTcpServer);
+		
+		if(mSharedPreferences.getBoolean("tcpServer",false)){
+			btnTcpServer.setText("Close Tcp Server");
+		}
+		
 		doBindService();
+		
+		
+		
 		// Log.i("Hugedata:StartFragment","doBindService()");
 		// Log.i("Hugedata:StartFragment:OnResume:mTcpServerService",(mTcpServerService==null?"null":"not null"));
 

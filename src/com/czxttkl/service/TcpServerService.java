@@ -222,20 +222,21 @@ public class TcpServerService extends Service {
 		super.onCreate();
 		Process process = null;
 		try {
+			File dir = new File("/tasktmp");
+			if(!dir.exists()){
+			Log.i("Hugedata:TcpServerService", "tasktmp make dir");
 			File location = new File("/");
-			process = Runtime.getRuntime().exec("/system/xbin/su mkdir tasktmp", null, location);
-			/*DataOutputStream os = new DataOutputStream(process.getOutputStream());
-			os.writeBytes("mkdir /tasktmp");
-			os.writeBytes("exit \n");*/
+			process = Runtime.getRuntime().exec("su", null, location);
+			DataOutputStream os = new DataOutputStream(process.getOutputStream());
+			os.writeBytes("mkdir tasktmp\n");
+			os.writeBytes("exit \n");
+			}
+			else Log.i("Hugedata:TcpServerService", "tasktmp dir existed");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		File dir = new File("/tasktmp");
-		if (!dir.exists()) {
-			dir.mkdirs();
-			Log.i("Hugedata:TcpServerService", "tasktmp make dir");
-		}
+
 		mSharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(getApplication());
 		mSharedPreferences.getBoolean("tcpServer", false);
@@ -336,11 +337,11 @@ public class TcpServerService extends Service {
 					// System.currentTimeMillis();
 					
 					File dir = new File("/tasktmp");
-					if (!dir.exists()) {
+/*					if (!dir.exists()) {
 						dir.mkdirs();
 						Log.i("Hugedata:TcpServerService",
 								"dir still not exist in SocketTask");
-					}
+					}*/
 
 					boolean taskExist = false;
 					if (taskId != null && !"".equals(taskId)) {
@@ -357,7 +358,7 @@ public class TcpServerService extends Service {
 					} else {
 						Log.i("Hugedata:TcpServerService", "Task Existing");
 						file = new File(dir, taskId + ".xml");
-						File logFile = new File(dir, taskId + ".log");
+						File logFile = new File(dir, taskId + ".xml.log");
 						Properties properties = new Properties();
 						properties.load(new FileInputStream(logFile));
 						position = Integer.valueOf(properties
