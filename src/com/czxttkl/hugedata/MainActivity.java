@@ -21,6 +21,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	public static ConditionFragment conditionFragment = new ConditionFragment();
 	public static PreferenceFragment configureFragment = new ConfigureFragment();
+	public static StartFragment startFragment = new StartFragment();
 	
 	
 	
@@ -42,11 +43,23 @@ public class MainActivity extends FragmentActivity implements
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section3)
 				.setTabListener(this));
 		
+	
+		
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		Log.i("Hugedata:MainActivity","onResume");
 		// Start Measurement Service
 		Intent i = new Intent();
 		i.setAction("android.intent.action.MeasureService");
 		this.startService(i);
 		
+		Intent i1 = new Intent();
+		i1.setAction("android.intent.action.TcpServerService");
+		this.startService(i1);
 	}
 
 	@Override
@@ -93,6 +106,9 @@ public class MainActivity extends FragmentActivity implements
 			fragmentTransaction.commit();
 			break;
 		case 3:
+			fragmentTransaction.replace(R.id.container, startFragment);
+			fragmentTransaction.addToBackStack(null);
+			fragmentTransaction.commit();
 			break;
 		}
 		

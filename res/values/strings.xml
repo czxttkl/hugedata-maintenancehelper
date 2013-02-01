@@ -2,10 +2,14 @@
 <resources>
 
     <string name="app_name">HugeData</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section3">Service</string>
     <string name="title_section2">Condition</string>
     <string name="title_section1">Configure</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="startTcpClient">Start TCP Client</string>
+    <string name="stopTcpClient">Stop TCP Client</string>
+    <string name="startTcpServer">Start TCP Server</string>
+    <string name="stopTcpServer">Stop TCP Server</string>
 
 </resources>

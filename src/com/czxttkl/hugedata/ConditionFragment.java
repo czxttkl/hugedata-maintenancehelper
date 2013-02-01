@@ -26,15 +26,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 public class ConditionFragment extends ListFragment {
-	/**
-	 * The fragment argument representing the section number for this fragment.
-	 */
-	//public static Bundle condition = new Bundle();
-	//public static ArrayList<String> dataList = new ArrayList<String>();
-	//public static HashSet<String> dataSet = new HashSet<String>();
+	
 	public static ArrayList<String> dataList = new ArrayList<String>();
-
-
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,19 +41,6 @@ public class ConditionFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.i("Condition Fragment","onCreateView");
-/*		dataList.clear();
-		
-		Intent i = new Intent();
-		i.setAction("android.intent.action.MeasureService");
-		getActivity().startService(i);
-		
-		for(String key : com.czxttkl.service.MeasureService.dataMap.keySet()){
-			dataList.add(key);
-			dataList.add(com.czxttkl.service.MeasureService.dataMap.get(key));
-		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,dataList);
-        setListAdapter(adapter);
-    	// Inflate the layout for this fragment*/
 		return inflater.inflate(R.layout.conditionfragment, container, false);
 	}
 

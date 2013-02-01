@@ -1,4 +1,6 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
 <!--     <PreferenceCategory android:title="In-line preferences" >
         <CheckBoxPreference
@@ -9,14 +11,7 @@
     </PreferenceCategory>  -->
     
     
-    <PreferenceCategory android:title="Port Settings" >
-        <EditTextPreference
-            android:dialogTitle="Input the port for TCP Client"
-            android:key="portTcpClient"
-            android:summary="Now:32100(Default)"
-            android:title="Port for TCP Client" 
-            android:defaultValue="32100"/>
-        	
+    <PreferenceCategory android:title="Tcp Server" >
         <EditTextPreference
             android:dialogTitle="Input the port for TCP Server"
             android:key="portTcpServer"
@@ -24,6 +19,50 @@
             android:title="Port for TCP Server" 
             android:defaultValue="32101"/>
     </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Tcp Client" >
+        <EditTextPreference
+            android:dialogTitle="Input the port for TCP Client"
+            android:key="portTcpClient"
+            android:summary="Now:32100(Default)"
+            android:title="Port for TCP Client" 
+            android:defaultValue="32100"/>
+        <EditTextPreference
+            android:dialogTitle="Input the Ip Address of PC Server"
+            android:key="ipTcpClient"
+            android:summary="Now:192.168.1.113"
+            android:title="Ip Address of PC Server" 
+            android:defaultValue="192.168.1.113"/>
+    </PreferenceCategory>
+    
+<!--     <PreferenceCategory android:title="Service Start/Stop" >
+        <CheckBoxPreference
+            android:key="tcpClient"
+            android:summary="To start Tcp Client"
+            android:title="TCP CLIENT"
+            android:defaultValue="false"
+         />
+        <CheckBoxPreference
+            android:key="tcpServer"
+            android:summary="To start Tcp Server"
+            android:title="TCP SERVER" 
+            android:defaultValue="false"/>
+    </PreferenceCategory> -->
+    
+    
+<!--     <Button
+        android:id="@+id/startTcpClient"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/startTcpClient"
+        ></Button>
+    
+     <Button
+        android:id="@+id/startTcpServer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/startTcpServer"
+        ></Button> -->
     
     
 <!--     <PreferenceCategory android:title="Launch preferences" > 

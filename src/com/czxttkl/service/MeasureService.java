@@ -102,6 +102,7 @@ public class MeasureService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
+		
 		Log.i("Hugedata:MeasureService", "onStartCommand");
 		getLocalIpAddress();
 		return START_STICKY; // this service is explicitly started and stopped
