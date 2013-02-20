@@ -31,7 +31,6 @@ public class StartFragment extends Fragment {
 	OnClickListener ltnTcpServer;
 	public boolean tcpServerStart = false;
 	public SharedPreferences mSharedPreferences;
-	
 
 	protected static final int SERVER_ESTABLISH_FAILED = 0;
 	protected static final int SERVER_ESTABLISH_SUCCESSFUL = 1;
@@ -43,8 +42,8 @@ public class StartFragment extends Fragment {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			mTcpServerService = ((MyBinder) service).getService();
 			Log.i("Hugedata:StartFragment",
-					(mTcpServerService == null ? "StartFragment has connected TcpServerService"
-							: "StartFragment has not connected TcpServerServicel"));
+					(mTcpServerService == null ? "StartFragment has not connected TcpServerServicel"
+							: "StartFragment has connected TcpServerService"));
 		}
 
 		@Override
@@ -89,7 +88,10 @@ public class StartFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Log.i("Hugedata:StartFragment11", "clickBtnTcpServer:mTcpServerService" + (mTcpServerService==null?"null":"not null"));
+				Log.i("Hugedata:StartFragment11",
+						"clickBtnTcpServer:mTcpServerService"
+								+ (mTcpServerService == null ? "null"
+										: "not null"));
 				if (!mSharedPreferences.getBoolean("tcpServer", false)) {
 					new Thread(mTcpServerService.new TcpServerStart()).start();
 				} else {
@@ -126,11 +128,11 @@ public class StartFragment extends Fragment {
 		// Log.i("Hugedata:StartFragment:listener",(ltnTcpServer==null?"null":"not null"));
 		btnTcpClient.setOnClickListener(ltnTcpClient);
 		btnTcpServer.setOnClickListener(ltnTcpServer);
-		
-		if(mSharedPreferences.getBoolean("tcpServer",false)){
+
+		if (mSharedPreferences.getBoolean("tcpServer", false)) {
 			btnTcpServer.setText("Close Tcp Server");
 		}
-		
+
 		doBindService();
 		// Log.i("Hugedata:StartFragment","doBindService()");
 		// Log.i("Hugedata:StartFragment:OnResume:mTcpServerService",(mTcpServerService==null?"null":"not null"));

@@ -32,11 +32,11 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 public class ConditionFragment extends ListFragment {
-	
+
 	public MeasureService mMeasureService;
 	public static ArrayList<String> dataList = new ArrayList<String>();
 	public boolean mIsBound;
-	
+	public ArrayAdapter<String> adapter;
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
@@ -44,16 +44,15 @@ public class ConditionFragment extends ListFragment {
 		doUnbindService();
 	}
 
-
-
 	private ServiceConnection mConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			Log.i("Hugedata:ConditionFragment","onServiceConnected()");
+			Log.i("Hugedata:ConditionFragment", "onServiceConnected()");
 			mMeasureService = ((MyBinder) service).getService();
 			Log.i("Hugedata:ConditionFragment",
-					(mMeasureService == null ? "ConditionFragment has connected MeasureService"
-							: "ConditionFragment has not connected MeasureService"));
+					(mMeasureService == null ? "ConditionFragment has not connected MeasureService"
+							: "ConditionFragment has connected MeasureService"));
+			updateListView();
 		}
 
 		@Override
@@ -63,15 +62,17 @@ public class ConditionFragment extends ListFragment {
 			mMeasureService = null;
 		}
 	};
-	
+
 	void doBindService() {
-		Log.i("Hugedata:ConditionFragment","doBindService()");
-		Log.i("Hugedata:ConditionFragment",
-				(mMeasureService == null ? "ConditionFragment has connected MeasureService"
-						: "ConditionFragment has not connected MeasureService"));
+		Log.i("Hugedata:ConditionFragment", "doBindService()");
+		/*
+		 * Log.i("Hugedata:ConditionFragment", (mMeasureService == null ?
+		 * "ConditionFragment has connected MeasureService" :
+		 * "ConditionFragment has not connected MeasureService"));
+		 */
 		getActivity().bindService(
-				new Intent(getActivity(), MeasureService.class), mConnection,
-				Context.BIND_AUTO_CREATE);
+				new Intent("android.intent.action.MeasureService"),
+				mConnection, Context.BIND_AUTO_CREATE);
 		mIsBound = true;
 	}
 
@@ -83,46 +84,54 @@ public class ConditionFragment extends ListFragment {
 		}
 	}
 
-	
-	
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		Log.i("ConditionFragment","onCreate");
+		Log.i("ConditionFragment", "onCreate");
 		super.onCreate(savedInstanceState);
-		
+
 	}
 
-	
-	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.i("Condition Fragment","onCreateView");
+		Log.i("Condition Fragment", "onCreateView");
 		return inflater.inflate(R.layout.conditionfragment, container, false);
 	}
-
-
 
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		doBindService();
-		dataList.clear();
-		Log.i("Condition Fragment","onResume");
-/*		Intent i = new Intent();
-		i.setAction("android.intent.action.MeasureService");
-		getActivity().startService(i);*/
-		//while(mMeasureService==null);
-		Log.i("Condition Fragment","onResume mMeasureService not null now");
-/*		for(String key : mMeasureService.getDatamapKeySet()){
-			dataList.add(key);
-			dataList.add(com.czxttkl.service.MeasureService.dataMap.get(key));
-		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,dataList);
-        setListAdapter(adapter);*/
-
+		
+		//Log.i("Condition Fragment", "onResume");
+		/*
+		 * Intent i = new Intent();
+		 * i.setAction("android.intent.action.MeasureService");
+		 * getActivity().startService(i);
+		 */
+/*		 while(mMeasureService==null){
+			 try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 }*/
+		Log.i("Hugedata:Condition Fragment", "onResume" + (mMeasureService == null ? "ConditionFragment has not connected MeasureService"
+				: "ConditionFragment has connected MeasureService"));
+		if(mMeasureService!=null)
+			updateListView();
 		super.onResume();
+	}
+	
+	public void updateListView(){
+		dataList.clear();
+		for(String key : mMeasureService.getDatamapKeySet()){
+		dataList.add(key);
+		dataList.add(com.czxttkl.service.MeasureService.dataMap.get(key)); }
+		adapter = new ArrayAdapter<String>(getActivity(),
+					android.R.layout.simple_list_item_1,dataList);
+		setListAdapter(adapter);
 	}
 
 }
