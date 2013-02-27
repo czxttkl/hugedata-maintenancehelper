@@ -18,8 +18,8 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.czxttkl.helper.StreamTool;
 import com.czxttkl.hugedata.StartFragment;
+import com.czxttkl.hugedata.helper.StreamTool;
 
 import android.app.Service;
 import android.content.Intent;

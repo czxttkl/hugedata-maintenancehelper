@@ -1,4 +1,4 @@
-package com.czxttkl.helper;
+package com.czxttkl.hugedata.helper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,7 +51,7 @@ loop:		while (true) {
 	* @return �ֽ�����
 	* @throws Exception
 	*/
-	public static byte[] readStream(InputStream inStream) throws Exception{
+	public static String readStream(InputStream inStream) throws Exception{
 			ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
 			byte[] buffer = new byte[1024];
 			int len = -1;
@@ -60,6 +60,7 @@ loop:		while (true) {
 			}
 			outSteam.close();
 			inStream.close();
-			return outSteam.toByteArray();
+			return outSteam.toString();
+			
 	}
 }
