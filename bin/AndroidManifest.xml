@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.czxttkl.hugedata.MainActivity"
+            android:name="com.czxttkl.hugedata.activity.MainActivity"
             android:label="@string/app_name" 
             >
             <intent-filter>
@@ -24,26 +24,31 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.czxttkl.service.MeasureService" >
+        <service android:name="com.czxttkl.hugedata.service.MeasureService" >
             <intent-filter>
                 <action android:name="android.intent.action.MeasureService" >
                 </action>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
-        <service android:name="com.czxttkl.service.TcpClientService" >
+        <service android:name="com.czxttkl.hugedata.service.TcpClientService" >
             <intent-filter>
                 <action android:name="android.intent.action.TcpClientService" >
                 </action>
-		
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
-        <service android:name="com.czxttkl.service.TcpServerService" >
+        <service android:name="com.czxttkl.hugedata.service.TcpServerService" >
             <intent-filter>
                 <action android:name="android.intent.action.TcpServerService" >
                 </action>
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </service>
+        <service android:name="com.czxttkl.hugedata.service.UnlockScreenService" >
+            <intent-filter>
+                <action android:name="android.intent.action.UnlockScreenService" >
+                </action>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
