@@ -2,9 +2,12 @@ package com.czxttkl.hugedata.activity;
 
 
 import com.czxttkl.hugedata.R;
+import com.czxttkl.hugedata.unlockscreen.Intents;
+import com.czxttkl.hugedata.unlockscreen.Constants;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,18 +31,13 @@ public class MainActivity extends FragmentActivity implements
 	public static PreferenceFragment configureFragment = new ConfigureFragment();
 	public static StartFragment startFragment = new StartFragment();
 	
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
 		// For each of the sections in the app, add a tab to the action bar.
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section1)
 				.setTabListener(this));
@@ -47,8 +45,24 @@ public class MainActivity extends FragmentActivity implements
 				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section3)
 				.setTabListener(this)); 
+		//Related with unlockscreen
+		startService(Intents.disableKeyguard(MainActivity.this));
+		registerReceiver(LockState, Intents.broadcastLockStateIntentFilter());
+		startService(Intents.getStatus(this));
 	}
+	//Related with UnlockScreen
+	public final LockStatusReceiver LockState = new LockStatusReceiver();
+	
+	public class LockStatusReceiver extends BroadcastReceiver {
 
+		public int Mode = Constants.MODE_Enabled;
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Mode = intent.getIntExtra("mode", Constants.MODE_Enabled);
+		}
+	}
+	
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -62,8 +76,19 @@ public class MainActivity extends FragmentActivity implements
 		Intent i1 = new Intent();
 		i1.setAction("android.intent.action.TcpServerService");
 		this.startService(i1);
+		
+		//Related with unlockscreen
+		registerReceiver(LockState, Intents.broadcastLockStateIntentFilter());
+		startService(Intents.getStatus(this));
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		//Related with unlockscreen
+		//unregisterReceiver(LockState);
+	}
+	
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		// Restore the previously serialized current tab position.

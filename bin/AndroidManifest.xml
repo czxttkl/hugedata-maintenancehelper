@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.czxttkl.hugedata"
     android:versionCode="1"
-    android:versionName="1.0" 
-    >
-
+    android:versionName="1.0" >
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="16" />
@@ -16,10 +17,10 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.czxttkl.hugedata.activity.MainActivity"
-            android:label="@string/app_name" 
-            >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,12 +43,18 @@
                 </action>
             </intent-filter>
         </service>
-        <service android:name="com.czxttkl.hugedata.service.UnlockScreenService" >
+        <service
+            android:name="com.czxttkl.hugedata.unlockscreen.DisableKeyguardService"
+            android:enabled="true" />
+
+        <receiver
+            android:name="com.czxttkl.hugedata.unlockscreen.PowerStateChangedReceiver"
+            android:enabled="false" >
             <intent-filter>
-                <action android:name="android.intent.action.UnlockScreenService" >
-                </action>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
-        </service>
+        </receiver>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
