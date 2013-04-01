@@ -32,9 +32,6 @@ public class DisableKeyguardService extends ServiceBase {
 	public static final String EXTRA_RemoteAction = "EXTRA_RemoteAction";
 	public static final String EXTRA_ForceNotify = "EXTRA_ForceNotify";
 
-	//final RelayRefreshWidgetReceiver receiver = new RelayRefreshWidgetReceiver();
-	
-	//private final AutoCancelingForegrounder foregrounder = new AutoCancelingForegrounder(this);
 	private final LockScreenStateManager lockStateManager = new LockScreenStateManager(this);
 	
 	@Override
@@ -46,7 +43,6 @@ public class DisableKeyguardService extends ServiceBase {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		//foregrounder.stopForeground();
 		_wrapper.dispose();
 	}
 
@@ -64,36 +60,14 @@ public class DisableKeyguardService extends ServiceBase {
 	private void handleCommand(final Intent intent) {
 		synchronized (_commandLock) {
 			onDisableKeyguard();
-/*			if(intent != null) {
-				final String remote_action = intent.getStringExtra(EXTRA_RemoteAction);
-				// Backwards compatibility. If the old "disable on charging" preference is set then put it to enable keyguard.
-				if (remote_action.equals(RemoteAction_EnableKeyguard) || remote_action.equals(RemoteAction_DisableKeyguardOnCharging)) {
-					onEnableKeyguard();
-				} else if (remote_action.equals(RemoteAction_DisableKeyguard)) {
-					onDisableKeyguard();
-				} else if (remote_action.equals(RemoteAction_RefreshWidgets)) {
-					onRefreshWidgets();
-				} else if (remote_action.equals(RemoteAction_NotifyState)) {
-					onNotifyState();
-				}else {  On all else fails just refresh the widgets. 
-					onRefreshWidgets();
-				}
-			} else {
-				onDisableKeyguard();
-			}*/
 		}
 	}
 
 	private void updateAllWidgets() {
 		final LockScreenState state = getLockScreenState();
-		if(!state.IsLockActive)/* {
-			enableLockscreen();
-		}
-		else {*/
+		if(!state.IsLockActive)
 			disableLockscreen();
-	//	}
 		broadcastState(state);
-	//	AppWidgetProvider1x1.UpdateAllWidgets(this, state);
 	}
 
 	private void broadcastState(LockScreenState state) {
@@ -104,10 +78,6 @@ public class DisableKeyguardService extends ServiceBase {
 		setLockscreenMode(false);
 	}
 
-/*	private void enableLockscreen() {
-		setLockscreenMode(true);
-	}*/
-
 	private void setLockscreenMode(boolean enableLockscreen) {
 
 		if (enableLockscreen) {
@@ -115,59 +85,8 @@ public class DisableKeyguardService extends ServiceBase {
 		} else {
 			_wrapper.disableKeyguard();
 		}
-
-/*		if(enableLockscreen) {
-			stopForeground();
-		}
-		else {
-			beginForeground();
-		}*/
 	}
 
-/*	public void beginForeground() {
-
-		if(! foregrounder.isForegrounded()) {
-			
-			foregrounder.startForeground(
-					R.drawable.ic_stat_nolock,
-					R.string.lockscreen_is_off,
-					R.string.select_to_configure,
-					R.string.lockscreen_is_off,
-					Intents.pendingShowPreferencesActivity(this));
-		}
-		
-		// Some users don't like the notification so it will not appear but they don't get foregrounding.
-		if(lockStateManager.shouldHideNotification()) {
-			foregrounder.beginRemoveForeground();
-		} else {
-			foregrounder.beginChangeAction(
-					R.drawable.ic_stat_nolock,
-					R.string.lockscreen_is_off,
-					R.string.tap_to_turn_on,
-					R.string.lockscreen_is_off,
-					Intents.pendingEnableKeyguard(this));
-		}
-	}
-	
-	public void stopForeground() {
-		foregrounder.stopForeground();
-	}
-
-	private void onRefreshWidgets() {
-		toggleComponents();
-		updateAllWidgets();
-		determineIfShouldDie();
-	}
-
-	private void toggleComponents() {
-		final ComponentEnabler enabler = new ComponentEnabler(this);
-		
-		if(lockStateManager.isListeningToPowerChanges()) {
-			enabler.enable(PowerStateChangedReceiver.class);
-		} else {
-			enabler.disable(PowerStateChangedReceiver.class);
-		}
-	}*/
 
 	private LockScreenState getLockScreenState() {
 		final LockScreenState state = new LockScreenState();
@@ -182,35 +101,11 @@ public class DisableKeyguardService extends ServiceBase {
 		
 		return state;
 	}
-	
-/*	private void onNotifyState() {
-		broadcastState(getLockScreenState());
-		determineIfShouldDie();
-		
-	}*/
-	
-/*	private void determineIfShouldDie() {
-		// HACK: Sometimes this is called when it shouldn't. Always check to see if the lock is active otherwise quit.
-		if(! _wrapper.isKeyguardDisabled()) {
-			destroyKeyguard();
-		}
-	}*/
 
 	private void onDisableKeyguard() {
 		lockStateManager.setKeyguardTogglePreference(Constants.MODE_Disabled);
 		updateAllWidgets();
 	}
-
-/*	private void onEnableKeyguard() {
-		lockStateManager.setKeyguardTogglePreference(Constants.MODE_Enabled);
-		updateAllWidgets();
-		destroyKeyguard();
-	}*/
-
-/*	private void destroyKeyguard() {
-		_wrapper.dispose();
-		this.stopSelf();
-	}*/
 
 	@Override
 	protected String getTag() {
