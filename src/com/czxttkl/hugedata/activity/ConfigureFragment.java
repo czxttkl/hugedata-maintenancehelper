@@ -23,7 +23,6 @@ public class ConfigureFragment extends PreferenceFragment {
 	public static PreferenceScreen mPreferenceScreen;
 	public static String port;
 	public static String ipTcpClient;
-	public static boolean tcp;
 	public static TcpServerService mTcpServerService;
 	
 	// Listener defined by anonymous inner class.
@@ -65,8 +64,6 @@ public class ConfigureFragment extends PreferenceFragment {
 		.getDefaultSharedPreferences(getActivity());
 		//Obtain the Control of SharedPreferences and Register a OnSharedPreferenceChangeListener
 		mSharedPreferences.registerOnSharedPreferenceChangeListener(mListener);
-		
-		
 	}
 
 

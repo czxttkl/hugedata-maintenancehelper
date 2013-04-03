@@ -11,9 +11,13 @@
     <string name="stopTcpClient">Stop TCP Client</string>
     <string name="startTcpServer">Start TCP Server</string>
     <string name="stopTcpServer">Stop TCP Server</string>
-    <string name="unlockscreen">This is the screen used for unlock the screen.</string>
+    <string name="unlockscreen">This is the screen used for unlocking the screen.</string>
     <string name="tips">Tips</string>
     <string name="tipscontent">This  app functions as the maintenance helper for android automation test. Be sure that every phone has installed this app.</string>
+    <string name="tips1">1. Unlock and wake up the screen</string>
+    <string name="tips2">2. Create /sdcard/hugedata</string>
+    <string name="tips3">3. Store the manufacturer and type for this phone</string>
+    <string name="tips4">4. Monitor the phone\'s real-time health</string>
     <string name="welcome">Welcome</string>
 
 </resources>

@@ -30,7 +30,7 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	public static ConditionFragment conditionFragment = new ConditionFragment();
-	public static PreferenceFragment configureFragment = new ConfigureFragment();
+	public static PreferenceFragment configureFragment = new ConfigureFragment1();
 //	public static StartFragment startFragment = new StartFragment();
 	public static UnlockScreenFragment unlockScreenFragment = new UnlockScreenFragment();
 	@Override
@@ -113,8 +113,6 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
 
