@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/unlockscreen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/unlockscreen"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        android:text="@string/tips" />
+
+    <TextView
+        android:id="@+id/tipscontent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/tipscontent" 
+        android:textSize="20sp"/>
+
+</LinearLayout>

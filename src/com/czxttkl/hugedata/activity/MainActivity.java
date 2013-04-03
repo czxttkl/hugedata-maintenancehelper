@@ -7,6 +7,8 @@ import com.czxttkl.hugedata.unlockscreen.Constants;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.app.KeyguardManager;
+import android.app.KeyguardManager.KeyguardLock;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,11 +31,12 @@ public class MainActivity extends FragmentActivity implements
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	public static ConditionFragment conditionFragment = new ConditionFragment();
 	public static PreferenceFragment configureFragment = new ConfigureFragment();
-	public static StartFragment startFragment = new StartFragment();
-	
+//	public static StartFragment startFragment = new StartFragment();
+	public static UnlockScreenFragment unlockScreenFragment = new UnlockScreenFragment();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_main);
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
@@ -45,10 +48,12 @@ public class MainActivity extends FragmentActivity implements
 				.setTabListener(this));
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section3)
 				.setTabListener(this)); 
+		actionBar.setSelectedNavigationItem(2);
 		//Related with unlockscreen
 		startService(Intents.disableKeyguard(MainActivity.this));
 		registerReceiver(LockState, Intents.broadcastLockStateIntentFilter());
 		startService(Intents.getStatus(this));
+		
 	}
 	//Related with UnlockScreen
 	public final LockStatusReceiver LockState = new LockStatusReceiver();
@@ -73,9 +78,9 @@ public class MainActivity extends FragmentActivity implements
 		i.setAction("android.intent.action.MeasureService");
 		this.startService(i);
 		
-		Intent i1 = new Intent();
+		/*		Intent i1 = new Intent();
 		i1.setAction("android.intent.action.TcpServerService");
-		this.startService(i1);
+		this.startService(i1);*/
 		
 		//Related with unlockscreen
 		registerReceiver(LockState, Intents.broadcastLockStateIntentFilter());
@@ -94,8 +99,9 @@ public class MainActivity extends FragmentActivity implements
 		// Restore the previously serialized current tab position.
 		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
 			getActionBar().setSelectedNavigationItem(
-					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
+					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM,2));
 		}
+
 	}
 
 	@Override
@@ -117,8 +123,6 @@ public class MainActivity extends FragmentActivity implements
 			FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, show the tab contents in the
 		// container view.
-		Log.i("tab",""+(tab.getPosition()+1));
-		//android.app.FragmentManager fragmentManager = getFragmentManager();
 		fragmentTransaction= getFragmentManager().beginTransaction();
 		
 		switch(tab.getPosition()+1){
@@ -133,7 +137,7 @@ public class MainActivity extends FragmentActivity implements
 			fragmentTransaction.commit();
 			break;
 		case 3:
-			fragmentTransaction.replace(R.id.container, startFragment);
+			fragmentTransaction.replace(R.id.container, unlockScreenFragment);
 			fragmentTransaction.addToBackStack(null);
 			fragmentTransaction.commit();
 			break;
