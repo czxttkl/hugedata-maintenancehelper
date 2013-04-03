@@ -1,6 +1,11 @@
 package com.czxttkl.hugedata.activity;
 
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import com.czxttkl.hugedata.R;
 import com.czxttkl.hugedata.unlockscreen.Intents;
 import com.czxttkl.hugedata.unlockscreen.Constants;
@@ -12,8 +17,10 @@ import android.app.KeyguardManager.KeyguardLock;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -23,7 +30,6 @@ import android.view.WindowManager;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
-
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * current tab position.
@@ -53,8 +59,23 @@ public class MainActivity extends FragmentActivity implements
 		startService(Intents.disableKeyguard(MainActivity.this));
 		registerReceiver(LockState, Intents.broadcastLockStateIntentFilter());
 		startService(Intents.getStatus(this));
+		//Related with file creation
+		Process process = null;
+		try {
+			File dir = new File("/sdcard/hugedata");
+			if (!dir.exists()) {
+				Log.i("Hugedata", "hugedata make dir");
+				File location = new File("/sdcard");
+				process = Runtime.getRuntime().exec("mkdir hugedata", null, location);
+			} else
+				Log.i("Hugedata", "hugedata dir existed");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
+	
 	//Related with UnlockScreen
 	public final LockStatusReceiver LockState = new LockStatusReceiver();
 	

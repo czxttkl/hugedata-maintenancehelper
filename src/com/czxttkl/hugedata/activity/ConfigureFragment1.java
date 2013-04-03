@@ -1,10 +1,14 @@
 package com.czxttkl.hugedata.activity;
 
+import java.io.File;
+import java.io.IOException;
+
 import com.czxttkl.hugedata.R;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
@@ -35,6 +39,7 @@ public class ConfigureFragment1 extends PreferenceFragment {
 				type = sharedPreferences.getString(key, null);
 				mPreferenceScreen.findPreference(key).setSummary(type);
 			}
+			storePref(manufacturer, type);
 
 		}
 	};
@@ -67,7 +72,26 @@ public class ConfigureFragment1 extends PreferenceFragment {
 				manufacturer);
 		type = mSharedPreferences.getString("type", null);
 		mPreferenceScreen.findPreference("type").setSummary(type);
-
+		storePref(manufacturer, type);
 	}
 
+	public void storePref(String manuf, String phontyp) {
+		// echo "manufacturer:type" > /sdcard/hugedata/deviceinfo
+		StringBuilder storePrefCmd = new StringBuilder();
+		storePrefCmd.append("busybox ");
+		storePrefCmd.append("echo \"");
+		storePrefCmd.append(manufacturer);
+		storePrefCmd.append(":");
+		storePrefCmd.append(type);
+		storePrefCmd.append("\" > ");
+		storePrefCmd.append(Environment.getExternalStorageDirectory().getPath() + "/hugedata/deviceinfo");
+		try {
+			Log.i("hugedata", storePrefCmd.toString());
+			Process process = Runtime.getRuntime().exec(storePrefCmd.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Log.i("hugedata", e.getMessage());
+			e.printStackTrace();
+		}
+	}
 }
