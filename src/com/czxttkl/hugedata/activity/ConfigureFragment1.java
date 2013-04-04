@@ -44,8 +44,8 @@ public class ConfigureFragment1 extends PreferenceFragment {
 				type = sharedPreferences.getString(key, null);
 				mPreferenceScreen.findPreference(key).setSummary(type);
 			}
+			
 			storePref(manufacturer, type);
-
 		}
 	};
 
@@ -80,26 +80,36 @@ public class ConfigureFragment1 extends PreferenceFragment {
 		storePref(manufacturer, type);
 	}
 
+	/**
+	 * SharedPreferences are stored in
+	 * /data/data/com.czxttkl.hugedatashared_prefs/com.czxttkl.hugedata_preferences.xml 
+	 * 
+	 * Since runner server can't not pull it to the 
+	 * local disk due to the limited permission, 
+	 * my first thought was to use : echo "manufacturer:type" > /sdcard/hugedata/deviceinfo 
+	 * However, ">" for IO redirection doesn't work in Runtime.getRuntime().exec 
+	 * So the alternative is to get inputstream from the process which will be written to the /sdcard then.
+	 * /sdcard/hugedata/deviceinfo format: manufacturer:type
+	 */
 	public void storePref(String manuf, String phontyp) {
-		//  The first thought is to use :
-		//  echo "manufacturer:type" > /sdcard/hugedata/deviceinfo
-		//  However,  ">" for IO redirection doesn't work in Runtime.getRuntime().exec
-		//  So the alternative is to get inputstream from the process.
-		//  /sdcard/hugedata/deviceinfo format:
-		//  manufacturer:type
 		StringBuilder storePrefCmd = new StringBuilder();
 		storePrefCmd.append("busybox ");
 		storePrefCmd.append("echo ");
 		storePrefCmd.append(manufacturer);
 		storePrefCmd.append(":");
 		storePrefCmd.append(type);
-		//storePrefCmd.append("\" > ");
-		//storePrefCmd.append(Environment.getExternalStorageDirectory().getPath() + "/hugedata/deviceinfo");
+		// storePrefCmd.append("\" > ");
+		// storePrefCmd.append(Environment.getExternalStorageDirectory().getPath()
+		// + "/hugedata/deviceinfo");
 		try {
 			Log.i("hugedata", storePrefCmd.toString());
-			Process process = Runtime.getRuntime().exec(storePrefCmd.toString());
-			BufferedReader bfr = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			File deviceInfoFile = new File(Environment.getExternalStorageDirectory().getPath() + "/hugedata/deviceinfo");
+			Process process = Runtime.getRuntime()
+					.exec(storePrefCmd.toString());
+			BufferedReader bfr = new BufferedReader(new InputStreamReader(
+					process.getInputStream()));
+			File deviceInfoFile = new File(Environment
+					.getExternalStorageDirectory().getPath()
+					+ "/hugedata/deviceinfo");
 			PrintWriter out = new PrintWriter(deviceInfoFile);
 			out.print(bfr.readLine().trim());
 			out.close();

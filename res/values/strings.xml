@@ -15,8 +15,8 @@
     <string name="tips">Tips</string>
     <string name="tipscontent">This  app functions as the maintenance helper for android automation test. Be sure that every phone has installed this app.</string>
     <string name="tips1">1. Unlock and wake up the screen</string>
-    <string name="tips2">2. Create /sdcard/hugedata</string>
-    <string name="tips3">3. Store the manufacturer and type for this phone</string>
+    <string name="tips2">2. Create the folder: /sdcard/hugedata</string>
+    <string name="tips3">3. Store the manufacturer and type of this phone in /sdcard/hugedata/deviceinfo</string>
     <string name="tips4">4. Monitor the phone\'s real-time health</string>
     <string name="welcome">Welcome</string>
 

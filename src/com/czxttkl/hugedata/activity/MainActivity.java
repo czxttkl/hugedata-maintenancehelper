@@ -1,31 +1,25 @@
 package com.czxttkl.hugedata.activity;
 
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import com.czxttkl.hugedata.R;
 import com.czxttkl.hugedata.unlockscreen.Intents;
 import com.czxttkl.hugedata.unlockscreen.Constants;
 
 import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
-import android.app.KeyguardManager;
-import android.app.KeyguardManager.KeyguardLock;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.Window;
-import android.view.WindowManager;
 
 
 public class MainActivity extends FragmentActivity implements
@@ -47,6 +41,7 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
 		// For each of the sections in the app, add a tab to the action bar.
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section1)
 				.setTabListener(this));
@@ -55,20 +50,20 @@ public class MainActivity extends FragmentActivity implements
 		actionBar.addTab(actionBar.newTab().setText(R.string.title_section3)
 				.setTabListener(this)); 
 		actionBar.setSelectedNavigationItem(2);
+		
 		//Related with unlockscreen
 		startService(Intents.disableKeyguard(MainActivity.this));
 		registerReceiver(LockState, Intents.broadcastLockStateIntentFilter());
 		startService(Intents.getStatus(this));
+		
 		//Related with file creation
-		Process process = null;
 		try {
-			File dir = new File("/sdcard/hugedata");
+			File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/hugedata");
 			if (!dir.exists()) {
 				Log.i("Hugedata", "hugedata make dir");
-				File location = new File("/sdcard");
-				process = Runtime.getRuntime().exec("mkdir hugedata", null, location);
-			} else
-				Log.i("Hugedata", "hugedata dir existed");
+				File location = new File(Environment.getExternalStorageDirectory().getPath());
+				Runtime.getRuntime().exec("mkdir hugedata", null, location);
+			} 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,11 +73,8 @@ public class MainActivity extends FragmentActivity implements
 	
 	//Related with UnlockScreen
 	public final LockStatusReceiver LockState = new LockStatusReceiver();
-	
 	public class LockStatusReceiver extends BroadcastReceiver {
-
 		public int Mode = Constants.MODE_Enabled;
-		
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Mode = intent.getIntExtra("mode", Constants.MODE_Enabled);
@@ -98,7 +90,7 @@ public class MainActivity extends FragmentActivity implements
 		Intent i = new Intent();
 		i.setAction("android.intent.action.MeasureService");
 		this.startService(i);
-		
+		// Abandon using TCPService
 		/*		Intent i1 = new Intent();
 		i1.setAction("android.intent.action.TcpServerService");
 		this.startService(i1);*/
@@ -143,7 +135,6 @@ public class MainActivity extends FragmentActivity implements
 		// When the given tab is selected, show the tab contents in the
 		// container view.
 		fragmentTransaction= getFragmentManager().beginTransaction();
-		
 		switch(tab.getPosition()+1){
 		case 1:
 			fragmentTransaction.replace(R.id.container, configureFragment);
@@ -160,22 +151,18 @@ public class MainActivity extends FragmentActivity implements
 			fragmentTransaction.addToBackStack(null);
 			fragmentTransaction.commit();
 			break;
-		}
-		
-		/*		Bundle args = new Bundle();
-		args.putInt(ConfigureFragment.ARG_SECTION,
-				tab.getPosition() + 1);
-		fragment.setArguments(args);*/
+		}		
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onTabUnselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
-	}
-
-	@Override
-	public void onTabReselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
 	}
 }
