@@ -1,9 +1,14 @@
 package com.czxttkl.hugedata.activity;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.PushbackInputStream;
 
 import com.czxttkl.hugedata.R;
+import com.czxttkl.hugedata.helper.StreamTool;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -76,18 +81,28 @@ public class ConfigureFragment1 extends PreferenceFragment {
 	}
 
 	public void storePref(String manuf, String phontyp) {
-		// echo "manufacturer:type" > /sdcard/hugedata/deviceinfo
+		//  The first thought is to use :
+		//  echo "manufacturer:type" > /sdcard/hugedata/deviceinfo
+		//  However,  ">" for IO redirection doesn't work in Runtime.getRuntime().exec
+		//  So the alternative is to get inputstream from the process.
+		//  /sdcard/hugedata/deviceinfo format:
+		//  manufacturer:type
 		StringBuilder storePrefCmd = new StringBuilder();
 		storePrefCmd.append("busybox ");
-		storePrefCmd.append("echo \"");
+		storePrefCmd.append("echo ");
 		storePrefCmd.append(manufacturer);
 		storePrefCmd.append(":");
 		storePrefCmd.append(type);
-		storePrefCmd.append("\" > ");
-		storePrefCmd.append(Environment.getExternalStorageDirectory().getPath() + "/hugedata/deviceinfo");
+		//storePrefCmd.append("\" > ");
+		//storePrefCmd.append(Environment.getExternalStorageDirectory().getPath() + "/hugedata/deviceinfo");
 		try {
 			Log.i("hugedata", storePrefCmd.toString());
 			Process process = Runtime.getRuntime().exec(storePrefCmd.toString());
+			BufferedReader bfr = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			File deviceInfoFile = new File(Environment.getExternalStorageDirectory().getPath() + "/hugedata/deviceinfo");
+			PrintWriter out = new PrintWriter(deviceInfoFile);
+			out.print(bfr.readLine().trim());
+			out.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			Log.i("hugedata", e.getMessage());

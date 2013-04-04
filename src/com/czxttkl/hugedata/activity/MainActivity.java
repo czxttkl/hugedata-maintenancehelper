@@ -112,7 +112,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onPause() {
 		super.onPause();
 		//Related with unlockscreen
-		//unregisterReceiver(LockState);
+		unregisterReceiver(LockState);
 	}
 	
 	@Override
