@@ -30,7 +30,7 @@
                 </action>
             </intent-filter>
         </service>
-        <service android:name="com.czxttkl.hugedata.service.TcpClientService" >
+ <!--        <service android:name="com.czxttkl.hugedata.service.TcpClientService" >
             <intent-filter>
                 <action android:name="android.intent.action.TcpClientService" >
                 </action>
@@ -41,7 +41,7 @@
                 <action android:name="android.intent.action.TcpServerService" >
                 </action>
             </intent-filter>
-        </service>
+        </service> -->
         <service
             android:name="com.czxttkl.hugedata.unlockscreen.DisableKeyguardService"
             android:enabled="true" />
