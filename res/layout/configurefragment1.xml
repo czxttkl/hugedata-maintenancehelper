@@ -12,9 +12,15 @@
         <EditTextPreference
             android:dialogTitle="Input the phone's type"
             android:key="type"
-            android:summary="Please use 5 characters(a-zA-Z0-9)"
+            android:summary="Please use 5 characters(A-Z0-9)"
             android:title="Phone Type(5 characters)" 
             android:defaultValue="T328W"/>
+        <EditTextPreference
+            android:dialogTitle="Input the phone's network"
+            android:key="network"
+            android:summary="Please use 3 block letters"
+            android:title="Network(3 block letters)" 
+            android:defaultValue="UNI"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

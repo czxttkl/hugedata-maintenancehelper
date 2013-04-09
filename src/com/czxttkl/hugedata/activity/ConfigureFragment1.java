@@ -27,6 +27,8 @@ public class ConfigureFragment1 extends PreferenceFragment {
 	public static PreferenceScreen mPreferenceScreen;
 	public String manufacturer;
 	public String type;
+	public String network;
+	
 	// Listener defined by anonymous inner class.
 	public OnSharedPreferenceChangeListener mListener = new OnSharedPreferenceChangeListener() {
 		@Override
@@ -43,6 +45,11 @@ public class ConfigureFragment1 extends PreferenceFragment {
 			if (key.equals("type")) {
 				type = sharedPreferences.getString(key, null);
 				mPreferenceScreen.findPreference(key).setSummary(type);
+			}
+			
+			if(key.equals("network")) {
+				network = sharedPreferences.getString(key, null);
+				mPreferenceScreen.findPreference(key).setSummary(network);
 			}
 			
 			storePref(manufacturer, type);
@@ -77,6 +84,8 @@ public class ConfigureFragment1 extends PreferenceFragment {
 				manufacturer);
 		type = mSharedPreferences.getString("type", null);
 		mPreferenceScreen.findPreference("type").setSummary(type);
+		network = mSharedPreferences.getString("network", null);
+		mPreferenceScreen.findPreference("network").setSummary(network);
 		storePref(manufacturer, type);
 	}
 
@@ -84,7 +93,7 @@ public class ConfigureFragment1 extends PreferenceFragment {
 	 * SharedPreferences are stored in
 	 * /data/data/com.czxttkl.hugedatashared_prefs/com.czxttkl.hugedata_preferences.xml 
 	 * 
-	 * Since runner server can't not pull it to the 
+	 * Since runner server is not allowed to pull it to the 
 	 * local disk due to the limited permission, 
 	 * my first thought was to use : echo "manufacturer:type" > /sdcard/hugedata/deviceinfo 
 	 * However, ">" for IO redirection doesn't work in Runtime.getRuntime().exec 
@@ -98,6 +107,8 @@ public class ConfigureFragment1 extends PreferenceFragment {
 		storePrefCmd.append(manufacturer);
 		storePrefCmd.append(":");
 		storePrefCmd.append(type);
+		storePrefCmd.append(":");
+		storePrefCmd.append(network);
 		// storePrefCmd.append("\" > ");
 		// storePrefCmd.append(Environment.getExternalStorageDirectory().getPath()
 		// + "/hugedata/deviceinfo");
