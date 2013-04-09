@@ -96,14 +96,14 @@ public class ConfigureFragment1 extends PreferenceFragment {
 	 * Since runner server is not allowed to pull it to the 
 	 * local disk due to the limited permission, 
 	 * my first thought was to use : echo "manufacturer:type" > /sdcard/hugedata/deviceinfo 
-	 * However, ">" for IO redirection doesn't work in Runtime.getRuntime().exec 
-	 * So the alternative is to get inputstream from the process which will be written to the /sdcard then.
-	 * /sdcard/hugedata/deviceinfo format: manufacturer:type
+	 * However, ">" (IO redirection pipe) doesn't work in Runtime.getRuntime().exec 
+	 * So the alternative is to use PrintWriter class writing infos into the file
+	 * /sdcard/hugedata/deviceinfo format: manufacturer:type:network
 	 */
 	public void storePref(String manuf, String phontyp) {
 		StringBuilder storePrefCmd = new StringBuilder();
-		storePrefCmd.append("busybox ");
-		storePrefCmd.append("echo ");
+/*		storePrefCmd.append("busybox ");
+		storePrefCmd.append("echo ");*/
 		storePrefCmd.append(manufacturer);
 		storePrefCmd.append(":");
 		storePrefCmd.append(type);
@@ -114,15 +114,11 @@ public class ConfigureFragment1 extends PreferenceFragment {
 		// + "/hugedata/deviceinfo");
 		try {
 			Log.i("hugedata", storePrefCmd.toString());
-			Process process = Runtime.getRuntime()
-					.exec(storePrefCmd.toString());
-			BufferedReader bfr = new BufferedReader(new InputStreamReader(
-					process.getInputStream()));
 			File deviceInfoFile = new File(Environment
 					.getExternalStorageDirectory().getPath()
 					+ "/hugedata/deviceinfo");
 			PrintWriter out = new PrintWriter(deviceInfoFile);
-			out.print(bfr.readLine().trim());
+			out.print(storePrefCmd.toString());
 			out.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
