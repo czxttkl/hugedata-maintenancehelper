@@ -38,6 +38,7 @@ public class ConditionFragment extends ListFragment {
 	public static ArrayList<String> dataList = new ArrayList<String>();
 	public boolean mIsBound;
 	public ArrayAdapter<String> adapter;
+
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
@@ -103,35 +104,36 @@ public class ConditionFragment extends ListFragment {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		doBindService();
-		
-		//Log.i("Condition Fragment", "onResume");
+
+		// Log.i("Condition Fragment", "onResume");
 		/*
 		 * Intent i = new Intent();
 		 * i.setAction("android.intent.action.MeasureService");
 		 * getActivity().startService(i);
 		 */
-/*		 while(mMeasureService==null){
-			 try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		 }*/
-		Log.i("Hugedata:Condition Fragment", "onResume" + (mMeasureService == null ? "ConditionFragment has not connected MeasureService"
-				: "ConditionFragment has connected MeasureService"));
-		if(mMeasureService!=null)
+		/*
+		 * while(mMeasureService==null){ try { Thread.sleep(1000); } catch
+		 * (InterruptedException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } }
+		 */
+		Log.i("Hugedata:Condition Fragment",
+				"onResume"
+						+ (mMeasureService == null ? "ConditionFragment has not connected MeasureService"
+								: "ConditionFragment has connected MeasureService"));
+		if (mMeasureService != null)
 			updateListView();
 		super.onResume();
 	}
-	
-	public void updateListView(){
+
+	public void updateListView() {
 		dataList.clear();
-		for(String key : mMeasureService.getDatamapKeySet()){
-		dataList.add(key);
-		dataList.add(com.czxttkl.hugedata.service.MeasureService.dataMap.get(key)); }
+		for (String key : mMeasureService.getDatamapKeySet()) {
+			dataList.add(key);
+			dataList.add(com.czxttkl.hugedata.service.MeasureService.dataMap
+					.get(key));
+		}
 		adapter = new ArrayAdapter<String>(getActivity(),
-					android.R.layout.simple_list_item_1,dataList);
+				android.R.layout.simple_list_item_1, dataList);
 		setListAdapter(adapter);
 	}
 

@@ -71,6 +71,7 @@ public class ConfigureFragment1 extends PreferenceFragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		return super.onCreateView(inflater, container, savedInstanceState);
+		//return inflater.inflate(R.layout.configurefragment1, container, false);
 	}
 
 	@Override

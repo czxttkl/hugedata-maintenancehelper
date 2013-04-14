@@ -33,11 +33,12 @@ public class MainActivity extends FragmentActivity implements
 	public static PreferenceFragment configureFragment = new ConfigureFragment1();
 //	public static StartFragment startFragment = new StartFragment();
 	public static UnlockScreenFragment unlockScreenFragment = new UnlockScreenFragment();
+	FragmentTransaction myFragmentTransaction;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_main);
+		
 		// Set up the action bar to show tabs.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -56,7 +57,7 @@ public class MainActivity extends FragmentActivity implements
 		registerReceiver(LockState, Intents.broadcastLockStateIntentFilter());
 		startService(Intents.getStatus(this));
 		
-		//Related with file creation
+		// Related with file creation
 		try {
 			File dir = new File(Environment.getExternalStorageDirectory().getPath() + "/hugedata");
 			if (!dir.exists()) {
@@ -68,7 +69,7 @@ public class MainActivity extends FragmentActivity implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 	
 	//Related with UnlockScreen
@@ -85,7 +86,6 @@ public class MainActivity extends FragmentActivity implements
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		Log.i("Hugedata:MainActivity","onResume");
 		// Start Measurement Service
 		Intent i = new Intent();
 		i.setAction("android.intent.action.MeasureService");
@@ -94,16 +94,27 @@ public class MainActivity extends FragmentActivity implements
 		/*		Intent i1 = new Intent();
 		i1.setAction("android.intent.action.TcpServerService");
 		this.startService(i1);*/
-		
+
+		//Every time calling onResume(), unlockscreen would be selected by default
+		getActionBar().setSelectedNavigationItem(2);
+
 		//Related with unlockscreen
 		registerReceiver(LockState, Intents.broadcastLockStateIntentFilter());
 		startService(Intents.getStatus(this));
 	}
 
 	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		Log.i("czxttkl","onstop");
+	}
+
+	@Override
 	public void onPause() {
 		super.onPause();
 		//Related with unlockscreen
+		Log.i("czxttkl","onpause");
 		unregisterReceiver(LockState);
 	}
 	
@@ -125,44 +136,52 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return true;
-	}
-
-	@Override
 	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+			FragmentTransaction ft) {
 		// When the given tab is selected, show the tab contents in the
 		// container view.
-		fragmentTransaction= getFragmentManager().beginTransaction();
+		Log.i("czxttkl","ontabselected");
 		switch(tab.getPosition()+1){
 		case 1:
-			fragmentTransaction.replace(R.id.container, configureFragment);
-			fragmentTransaction.addToBackStack(null);
-			fragmentTransaction.commit();
+			ft.replace(R.id.container, configureFragment);
 			break;		
 		case 2:
-			fragmentTransaction.replace(R.id.container, conditionFragment);
-			fragmentTransaction.addToBackStack(null);
-			fragmentTransaction.commit();
+			ft.replace(R.id.container, conditionFragment);
 			break;
 		case 3:
-			fragmentTransaction.replace(R.id.container, unlockScreenFragment);
-			fragmentTransaction.addToBackStack(null);
-			fragmentTransaction.commit();
+			ft.replace(R.id.container, unlockScreenFragment);
 			break;
-		}		
+		}
 	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+		//This method is mostly called after onResume()#getActionBar().setSelectedNavigationItem(2);
+		//Make sure the system will call UnlockScreenFragment.onCreateView()
+		switch(tab.getPosition()+1){
+		case 1:
+			ft.remove(configureFragment);
+			configureFragment = new ConfigureFragment1();
+			ft.add(R.id.container, configureFragment);
+			break;		
+		case 2:		
+			ft.remove(conditionFragment);
+			conditionFragment = new ConditionFragment();
+			ft.add(R.id.container, conditionFragment);
+			break;
+		case 3:
+			ft.remove(unlockScreenFragment);
+			unlockScreenFragment = new UnlockScreenFragment();
+			ft.add(R.id.container, unlockScreenFragment);
+			break;
+		}
 	}
+
 }
